@@ -6,13 +6,14 @@ export function verifyGithubSignature(req) {
 
 	if (!signature) {
 		return false;
-	}
+    }
+    console.log(req)
 
 	const expectedSignature =
 		"sha256=" +
 		crypto
 			.createHmac("sha256", WEBHOOK_SECRET)
-			.update(req.rawBody)
+			.update(JSON.stringify(req.rawBody))
 			.digest("hex");
 
 	return crypto.timingSafeEqual(
