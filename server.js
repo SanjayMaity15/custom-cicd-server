@@ -11,13 +11,13 @@ app.use(express.json())
 
 
 app.post("/webhook/github", (req, res) => {
-	// const valid = verifyGithubSignature(req);
+	const valid = verifyGithubSignature(req);
 
-	// if (!valid) {
-	// 	return res.status(401).json({
-	// 		message: "Invalid signature",
-	// 	});
-	// }
+	if (!valid) {
+		return res.status(401).json({
+			message: "Invalid signature",
+		});
+	}
 
 	console.log("Verified GitHub webhook");
 
