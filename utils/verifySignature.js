@@ -1,8 +1,7 @@
 import crypto from "crypto";
 
-const WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET;
-
 export function verifyGithubSignature(req) {
+	const WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET;
 	const signature = req.headers["x-hub-signature-256"];
 
 	if (!signature) {
