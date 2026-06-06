@@ -4,8 +4,6 @@ export function verifyGithubSignature(req) {
 	const WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET;
 	const signature = req.headers["x-hub-signature-256"];
 
-    console.log(req.rawBody)
-    console.log(typeof req.rawBody)
 
 	if (!signature) {
 		return false;
@@ -15,7 +13,7 @@ export function verifyGithubSignature(req) {
 		"sha256=" +
 		crypto
 			.createHmac("sha256", WEBHOOK_SECRET)
-			.update(req.rawBody)
+			.update(JSON.stringify(req.body))
 			.digest("hex");
 
 	return crypto.timingSafeEqual(
