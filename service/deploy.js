@@ -1,8 +1,11 @@
 import { spawn } from "child_process";
 
-const BACKEND_SERVER_IP = process.env.BACKEND_SERVER_IP;
+
 
 export function deployBackend() {
+
+    const BACKEND_SERVER_IP = process.env.BACKEND_SERVER_IP;
+
 	const child = spawn("ssh", [
 		`ubuntu@${BACKEND_SERVER_IP}`,
 		"/home/ubuntu/deploy-backend.sh",
@@ -22,6 +25,9 @@ export function deployBackend() {
 }
 
 export function deployFrontend() {
+
+    const BACKEND_SERVER_IP = process.env.BACKEND_SERVER_IP;
+
 	const child = spawn("ssh", [
 		`ubuntu@${BACKEND_SERVER_IP}`,
 		"/home/ubuntu/deploy-frontend.sh",
