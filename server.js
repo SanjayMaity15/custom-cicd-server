@@ -21,12 +21,16 @@ app.post("/webhook/github", (req, res) => {
 
 	console.log("Verified GitHub webhook");
 
+	const frontendChanged = req.body.commits.modified.some((file) => file.startsWith("frontend/"))
+
+	const backendChanged = req.body.commits.modified.some((file) => file.startsWith("backend/"))
+
+	console.log({frontendChanged, backendChanged})
+
 	res.status(200).json({
 		message: "Webhook accepted",
     });
-    
-    console.log(req.headers)
-    console.log(req.body)
+
 });
 
 app.get("/", (req, res) => {
