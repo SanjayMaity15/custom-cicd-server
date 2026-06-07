@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import { verifyGithubSignature } from "./utils/verifySignature.js";
+import { deployBackend, deployFrontend } from "./service/deploy.js";
 
 dotenv.config();
 const app = express();
@@ -18,7 +19,11 @@ app.post("/webhook/github", (req, res) => {
 		});
 	}
 
-	console.log("Signarure verified")
+	console.log("Signarure verified");
+
+	res.status(200).json({
+		message: "Webhook accepted",
+	});
 
 	const changedFiles =
 		req.body.commits?.flatMap((commit) => [
@@ -37,11 +42,16 @@ app.post("/webhook/github", (req, res) => {
 		file.startsWith("backend/"),
 	);
 
-	console.log({frontendChanged, backendChanged})
+	if (frontendChanged && backendChanged) {
+		deployFrontend();
+		deployBackend();
+	} else if (frontendChanged) {
+		deployFrontend();
+	} else if (backendChanged) {
+		deployBackend();
+	}
 
-	res.status(200).json({
-		message: "Webhook accepted",
-	});
+	console.log({ frontendChanged, backendChanged });
 });
 
 app.get("/", (req, res) => {
