@@ -35,11 +35,11 @@ app.post("/webhook/github", (req, res) => {
 	console.log(changedFiles);
 
 	const frontendChanged = changedFiles.some((file) =>
-		file.startsWith("frontend/"),
+		file.startsWith("client/"),
 	);
 
 	const backendChanged = changedFiles.some((file) =>
-		file.startsWith("backend/"),
+		file.startsWith("server/"),
 	);
 
 	if (frontendChanged && backendChanged) {
