@@ -1,14 +1,13 @@
-import express from "express"
-import dotenv from "dotenv"
-import { verifyGithubSignature } from "./utils/verifySignature.js"
+import express from "express";
+import dotenv from "dotenv";
+import { verifyGithubSignature } from "./utils/verifySignature.js";
 
-dotenv.config()
-const app = express()
+dotenv.config();
+const app = express();
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5000;
 
-app.use(express.json())
-
+app.use(express.json());
 
 app.post("/webhook/github", (req, res) => {
 	const valid = verifyGithubSignature(req);
@@ -19,24 +18,36 @@ app.post("/webhook/github", (req, res) => {
 		});
 	}
 
-	console.log("Verified GitHub webhook");
+	console.log("Signarure verified")
 
-	const frontendChanged = req.body.commits.modified.some((file) => file.startsWith("frontend/"))
+	const changedFiles =
+		req.body.commits?.flatMap((commit) => [
+			...(commit.added || []),
+			...(commit.modified || []),
+			...(commit.removed || []),
+		]) || [];
 
-	const backendChanged = req.body.commits.modified.some((file) => file.startsWith("backend/"))
+	console.log(changedFiles);
+
+	const frontendChanged = changedFiles.some((file) =>
+		file.startsWith("frontend/"),
+	);
+
+	const backendChanged = changedFiles.some((file) =>
+		file.startsWith("backend/"),
+	);
 
 	console.log({frontendChanged, backendChanged})
 
 	res.status(200).json({
 		message: "Webhook accepted",
-    });
-
+	});
 });
 
 app.get("/", (req, res) => {
-    res.send("CI CD SERVER IS RUNNING !!!")
-})
+	res.send("CI CD SERVER IS RUNNING !!!");
+});
 
 app.listen(PORT, () => {
-    console.log("SERVER IS RUNNING AT ", PORT)
-})  
+	console.log("SERVER IS RUNNING AT ", PORT);
+});
